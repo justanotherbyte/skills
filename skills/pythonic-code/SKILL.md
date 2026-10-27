@@ -39,6 +39,13 @@ description: Use whenever writing Python.
 - Give models a `__repr__` like `<User id=1 name='x'>`. Use `__slots__` on classes created in bulk.
 - Make enums that read external data tolerant of unknown values instead of raising.
 
+## Dataclass or TypedDict
+
+- Use a `TypedDict` for data that stays a dict: JSON payloads coming in or going out, and `**kwargs` shapes. It only types the keys. It doesn't validate or convert anything at runtime.
+- Use a `@dataclass` for data your own code creates and passes around, such as config, results and value objects. It gives attribute access, `__init__`, `__repr__` and `__eq__`. Add `frozen=True` for values that shouldn't change and `slots=True` for classes created in bulk.
+- Use a plain class when the object needs a custom `__init__`, an `_update(data)` method, or properties over raw values. Models that mirror remote state fit here.
+- Don't pass a `TypedDict` deep into the code. Convert it to a dataclass or model at the boundary.
+
 ## Signatures and types
 
 - Make optional parameters keyword-only with `*`. Use `/` when a parameter name means nothing to callers.
