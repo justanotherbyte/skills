@@ -28,8 +28,28 @@ description: Use whenever writing Python.
 - Express mappings as data. Use a dict of handlers instead of an `if`/`elif` chain that maps a key to a value.
 - Use builtins and comprehensions (`enumerate`, `reversed`, `dict.fromkeys`, filtered dict comprehensions).
 - Keep a public method at one level of abstraction, with its steps as calls to well-named helpers.
-- Group lines into paragraphs, one step each, separated by a blank line. When a function passes four or five paragraphs, move one into a helper named after its step.
 - Comment only the quirks of external systems (`# API quirk: 101 is treated as 100`). Names carry the rest.
+
+## Code paragraphs
+
+- Split a function body into paragraphs separated by one blank line. Each paragraph does one step, such as checking inputs, building a value, making a call or shaping the result.
+- Keep a step's lines together. Don't put blank lines inside a step or after every statement.
+- Assign a variable in the paragraph that first uses it, not at the top of the function.
+- If a paragraph needs a comment to say what it does, move it into a helper named after that step.
+- When a function passes four or five paragraphs, move one into a helper.
+
+```python
+def send(self, content: str, *, embeds: list[Embed] | None = None) -> Message:
+    if not content and not embeds:
+        raise ValueError('send() needs content or embeds')
+
+    payload: MessagePayload = {'content': content}
+    if embeds:
+        payload['embeds'] = [embed.to_dict() for embed in embeds]
+
+    data = self._http.post(Route('POST', '/channels/{id}/messages', id=self.id), json=payload)
+    return Message(state=self._state, channel=self, data=data)
+```
 
 ## Boundary data
 
